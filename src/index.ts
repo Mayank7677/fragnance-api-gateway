@@ -56,7 +56,6 @@ app.use(
 // setting up proxy for user service - tokens
 app.use(
   "/v1/tokens",
-  authMiddleware,
   proxy(process.env.USER_SERVICE_URL as string, {
     ...proxyOptions,
 
