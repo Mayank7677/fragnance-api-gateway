@@ -16,8 +16,6 @@ app.use(express.json());
 app.use(configureCors());
 app.use(cookieParser());
 
-console.log(process.env.USER_SERVICE_URL);
-
 app.use((req, res, next) => {
   logger.info(`Received ${req.method} request to ${req.url}`);
   logger.info(`Request body, ${req.body}`);
@@ -69,9 +67,25 @@ app.use(
   })
 );
 
-// setting up proxy for product service 
+// setting up proxy for product service : products
 app.use(
   "/v1/products",
+  proxy(process.env.PRODUCT_SERVICE_URL as string, {
+    ...proxyOptions,
+
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from Identity service: ${proxyRes.statusCode}`
+      );
+
+      return proxyResData;
+    },
+  })
+);
+
+// setting up proxy for product service : collections
+app.use(
+  "/v1/collections",
   proxy(process.env.PRODUCT_SERVICE_URL as string, {
     ...proxyOptions,
 
