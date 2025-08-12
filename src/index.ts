@@ -119,6 +119,22 @@ app.use(
   })
 );
 
+// setting up proxy for cart-service : carts
+app.use(
+  "/v1/carts",
+  proxy(process.env.CART_SERVICE_URL as string, {
+    ...proxyOptions,
+
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from Identity service: ${proxyRes.statusCode}`
+      );
+
+      return proxyResData;
+    },
+  })
+);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`api gateway is running on port : ${PORT}`);
