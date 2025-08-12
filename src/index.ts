@@ -99,6 +99,22 @@ app.use(
   })
 );
 
+// setting up proxy for inventory service : variants
+app.use(
+  "/v1/variants",
+  proxy(process.env.INVENTORY_SERVICE_URL as string, {
+    ...proxyOptions,
+
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from Identity service: ${proxyRes.statusCode}`
+      );
+
+      return proxyResData;
+    },
+  })
+);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`api gateway is running on port : ${PORT}`);
