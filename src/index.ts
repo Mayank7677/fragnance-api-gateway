@@ -6,7 +6,8 @@ import configureCors from "./configs/cors.config";
 import cookieParser from "cookie-parser";
 import logger from "./utils/logger";
 import proxy from "express-http-proxy";
-import { authMiddleware } from "./middlewares/auth.middleware";
+
+import router from "./routes/route";
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(configureCors());
 app.use(cookieParser());
+
+//routes
+app.use("/v1", router);
 
 app.use((req, res, next) => {
   logger.info(`Received ${req.method} request to ${req.url}`);
